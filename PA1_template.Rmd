@@ -1,17 +1,58 @@
 # Reproducible Research: Peer Assessment 1
 
-
 ## Loading and preprocessing the data
+* Load necessary libraries:
+```{r load_libraries, echo = TRUE}
+  library(ggplot2)
+```
 
+* Assign function which loads data from csv file within zip archive:
+```{r load_data, echo = TRUE}
+load_data <- function() {
+    file = "activity.zip"
+    data <- read.csv2(unz(file, "activity.csv"), sep=",", header=TRUE)
+    data$date <- as.Date(data$date, format="%Y-%m-%d")
+    data$interval <- factor(data$interval)
+    data
+}
+data <- load_data()
+```
 
+* Explore data summary:
+```{r summary, echo = TRUE}
+summary(data)
+str(data)
+```
 
 ## What is mean total number of steps taken per day?
+* Histogram of the total number of steps taken each day:
+```{r echo = FALSE, results = 'hide'}
+# Set locale to english to avoid warnings "## Warning: font width unknown for character"
+Sys.setlocale("LC_TIME", "English")
+```
+```{r make_histogram, echo = TRUE, fig.width = 10}
+steps_per_day <- aggregate(steps ~ date, data = data, FUN = sum)
+colnames(steps_per_day) <- c("date", "steps")
+qplot(x = date, y = steps, geom = "histogram", fill = steps, stat = "identity", main = "The total number of steps taken each day", xlab = "Date", ylab = "Steps", data = steps_per_day)
+```
 
+* The mean and median total number of steps taken per day:
+```{r echo = TRUE, results = 'hide'}
+steps_mean <- mean(steps_per_day$steps)
+steps_median <- median(steps_per_day$steps)
+```
 
+**Mean** - `r steps_mean`
+  
+**Median** - `r steps_median`
 
 ## What is the average daily activity pattern?
+* Time series plot of the 5-minute interval and the average number of steps taken, averaged across all days:
+```{r echo = TRUE}
 
+```
 
+* Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 ## Imputing missing values
 
